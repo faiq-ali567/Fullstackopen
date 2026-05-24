@@ -18,8 +18,8 @@ const App = () => {
       .getAll()
       .then((response) => {
         setPersons(response.data)
-      })
-  }, [persons])
+    })
+  }, [])
 
   const findPerson = () => {
     return persons.find((person) => person.name === newName);
