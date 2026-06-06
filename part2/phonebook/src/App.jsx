@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import ErrorMessage from './components/ErrorMessage'
 import axios from 'axios'
 
 import phonebookService from './service/phonebookService'
@@ -12,12 +13,18 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [keyword, setKeyword] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     phonebookService
       .getAll()
       .then((response) => {
         setPersons(response.data)
+        setErrorMessage('')
+    })
+    .catch(error => {
+      setErrorMessage(error.response.data.error)
+      console.log(error.response.data.error)
     })
   }, [])
 
@@ -51,7 +58,12 @@ const App = () => {
             return person.name === duplicatePerson.name ? response.data : person;
           });
           setPersons(newPersons);
-        });
+          setErrorMessage('')
+        })
+        .catch(error => {
+          setErrorMessage(error.response.data.error)
+          console.log(error.response.data.error)
+        })
     }
     return true;
   }
@@ -72,6 +84,11 @@ const App = () => {
       .then((response) => {
         const newPersons = [...persons, response.data]
         setPersons(newPersons)
+        setErrorMessage('')
+      })
+      .catch(error => {
+        setErrorMessage(error.response.data.error)
+        console.log(error.response.data.error)
       })
   }
 
@@ -83,13 +100,19 @@ const App = () => {
         .deletePerson(id)
         .then((response) => {
           setPersons(persons.filter((person) => person.id !== id));
-        });
+          setErrorMessage('');
+        })
+        .catch(error => {
+          setErrorMessage(error.response.data.error)
+          console.log(error.response.data.error)
+        })
     }
   } 
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <ErrorMessage errorMessage={errorMessage} />
       <Filter setKeyword={setKeyword} keyword={keyword} />
       <h3>Add a new</h3>
       <PersonForm onSubmit={onSubmit} newName={newName} newNumber={newNumber} setNewName={setNewName} setNewNumber={setNewNumber} />
