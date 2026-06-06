@@ -65,6 +65,9 @@ const App = () => {
         })
         .catch(error => {
           setErrorMessage(error.response.data.error)
+          setTimeout(() => {
+            setErrorMessage('')
+          }, 5000)
           console.log(error.response.data.error)
         })
     }
@@ -95,6 +98,9 @@ const App = () => {
       })
       .catch(error => {
         setErrorMessage(error.response.data.error)
+        setTimeout(() => {
+          setErrorMessage('')
+        }, 5000)
         console.log(error.response.data.error)
       })
   }
@@ -111,6 +117,9 @@ const App = () => {
         })
         .catch(error => {
           setErrorMessage(error.response.data.error)
+          setTimeout(() => {
+            setErrorMessage('')
+          }, 5000)
           console.log(error.response.data.error)
         })
     }
