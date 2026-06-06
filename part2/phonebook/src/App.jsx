@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import ErrorMessage from './components/ErrorMessage'
-import axios from 'axios'
+import Notification from './components/Notification'
 
 import phonebookService from './service/phonebookService'
 
@@ -14,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [keyword, setKeyword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     phonebookService
@@ -24,6 +24,9 @@ const App = () => {
     })
     .catch(error => {
       setErrorMessage(error.response.data.error)
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 5000)
       console.log(error.response.data.error)
     })
   }, [])
@@ -85,6 +88,10 @@ const App = () => {
         const newPersons = [...persons, response.data]
         setPersons(newPersons)
         setErrorMessage('')
+        setSuccessMessage(`Added ${newPerson.name}`)
+        setTimeout(() => {
+          setSuccessMessage('')
+        }, 5000)
       })
       .catch(error => {
         setErrorMessage(error.response.data.error)
@@ -98,7 +105,7 @@ const App = () => {
     if (wants) {
       phonebookService
         .deletePerson(id)
-        .then((response) => {
+        .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
           setErrorMessage('');
         })
@@ -112,7 +119,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <ErrorMessage errorMessage={errorMessage} />
+      <Notification message={errorMessage} isError={true}/>
+      <Notification message={successMessage} isError={false} />
       <Filter setKeyword={setKeyword} keyword={keyword} />
       <h3>Add a new</h3>
       <PersonForm onSubmit={onSubmit} newName={newName} newNumber={newNumber} setNewName={setNewName} setNewNumber={setNewNumber} />
